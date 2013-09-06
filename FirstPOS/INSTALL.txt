@@ -1,0 +1,26 @@
+=====FirstPOS=====
+Introduction
+	This project is desktop application. It's need more support of third - party services.
+How to Install
+	1. Check - out FirstPOS from repository.
+	2. Run cmd(CommandPrompt).
+	3. Go to directory of exist project(ex.: C:\workspace\FirstPOS).
+	4. Use ant to initialize environment for project from xml file in project(build.xml) by type (ex.)
+		C:\workspace\FirstPOS>ant -f build.xml init
+	5. You can compile java code by type
+		C:\workspace\FirstPOS>ant -f build.xml build
+	6. You can clean and rebuild everything by type
+		C:\workspace\FirstPOS>ant -f build.xml buildall
+	7. You can create a distribution by type
+		C:\workspace\FirstPOS>ant -f build.xml dist
+	8. You can generate API documentation using javadoc by type
+		C:\workspace\FirstPOS>ant -f build.xml javadoc
+	    This may have problem if source have syntax error.
+	9. You can clean the build file by type
+		C:\workspace\FirstPOS>ant -f build.xml clean
+	10. You can initialize test output directories by type
+		C:\workspace\FirstPOS>ant -f build.xml test-init
+	11. You can compile test unit by type
+		C:\workspace\FirstPOS>ant -f build.xml test-compile
+	12. For more information you can look by type
+		C:\workspace\FirstPOS>ant -f build.xml help

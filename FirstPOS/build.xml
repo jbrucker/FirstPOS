@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Ant build file for FirstPOS project.
+     Defines tasks used to build the project from source code.
+	 To create everything use:
+	 ant dist
+	 For help type: ant help
+  -->
+<project name="FirstPOS" basedir="." default="build">
+    <description>
+        Ant Build file for FirstPOS
+    </description>
+
+	<!-- define properties used by build tasks -->
+    <property environment="env"/>
+    <!-- java language compliance level, used by compile task -->
+	<property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+	<!-- directory for main source code -->
+	<property name="src.dir" location="src"/>
+	<!-- directories for build output -->
+	<property name="build.dir" location="target"/>
+	<property name="build.classes.dir" location="${build.dir}/classes"/>
+	<!-- directory for the distribution products -->
+	<property name="dist.dir"  location="dist"/>
+	<property name="lib.dir"  location="${dist.dir}/lib"/>
+	<property name="doc.dir"  location="doc"/>
+	<!-- name of jar file to create for project -->
+	<property name="application.jar" value="firstpos-1.0.jar" />
+
+	<!-- source and build directories for test classes -->
+	<property name="test.dir" location="src/test"/>
+	<property name="test.classes.dir" location="${build.dir}/test-classes"/>
+	<property name="test.reports.dir" location="${build.dir}/test-reports"/>
+
+	<!-- classpath for finding required jar files -->
+	<path id="classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar"/>
+		</fileset>
+		<pathelement location="${build.classes.dir}"/>
+		<pathelement location="/lib/log4j-1.2.15/log4j-1.2.15.jar"/>
+
+	</path>
+
+	<path id="test-classpath">
+		<!-- include everthing from build classpath -->
+		<path refid="classpath"/>
+		<!-- add extra test dependencies -->
+		<pathelement location="/lib/junit/junit-4.5.jar" />
+	</path>
+
+	<!-- initialize environment, create needed directories -->
+	<target name="init" description="initialize directories">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${lib.dir}"/>
+		<!-- copy the source files except java files -->
+		<copy includeemptydirs="false" todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" excludes="**/*.launch, **/*.java"/>
+        </copy>
+		<!-- copy property files -->
+		<copy includeemptydirs="false" todir="${dist.dir}">
+            <fileset dir="${src.dir}" includes="*.properties"/>
+        </copy>
+	</target>
+
+	<!-- Compile the java code --> 
+	<target name="build" depends="init" description="compile the source" >
+		<echo message="${ant.project.name}: ${ant.file}"/>
+		<javac destdir="${build.classes.dir}" 
+				source="${source}" target="${target}">
+			<src path="${src.dir}"/>
+			<classpath refid="classpath"/>
+		</javac>
+		<javac debug="true" 
+			destdir="target/test-classes" source="${source}" target="${target}">
+            <src path="src/test/java"/>
+            <classpath refid="test-classpath"/>
+        </javac>
+	</target>
+
+	<!-- clean and rebuild everything, including the application jar file -->
+	<target name="buildall" description="clean and compile all"
+		depends="clean, build">
+		<delete dir="${dist.dir}" includes="${application.jar}"/>
+		<antcall target="dist"/>
+	</target>
+
+	<target name="dist" depends="build" description="create distribution" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist.dir}"/>
+
+		<!-- Put everything in ${build.classes.dir} into the jar file -->
+		<jar jarfile="${dist.dir}/${application.jar}"
+			 basedir="${build.classes.dir}">
+		</jar>
+		<copy includeemptydirs="false" todir="${dist.dir}">
+			<fileset dir="${src.dir}" includes="*.properties"/>
+		</copy>
+	</target>
+
+  	<!-- Generate API documentation using javadoc.
+		 Depends on build task since javadoc may not 
+		 work correctly if source has syntax errors. 
+	  -->
+	<target name="javadoc" depends="build">
+		<mkdir dir="${doc.dir}/api"/>
+		<javadoc packagenames="firstgen.*"
+			sourcepath="${src.dir}"
+			destdir="${doc.dir}/api"
+			author="true"
+			version="false"
+			use="true" >
+			<classpath refid="classpath"/>
+		</javadoc>
+	</target>
+
+	<target name="clean" description="delete old build products" >
+		<echo message="Removing *.class files from ${build.classes.dir}"/>
+        <delete dir="${build.classes.dir}" includes="**/*.class"/>
+		<echo message="Removing *.class files from ${test.classes.dir}"/>
+        <delete dir="${test.classes.dir}" includes="**/*.class"/>
+	</target>
+
+	<!-- initialize the test output directories -->
+	<target name="test-init">
+		<mkdir dir="${test.classes.dir}"/>
+		<mkdir dir="${test.reports.dir}"/>
+	</target>
+
+	<!-- compile the unit tests -->
+    <target name="test-compile" description="Compile unit tests"
+			depends="build,test-init">
+		<javac destdir="${test.classes.dir}" debug="true"
+			srcdir="${test.dir}">
+			<classpath refid="test-classpath"/>
+			
+		</javac>
+	</target>
+
+	<target name="test" depends="test-compile">
+        <junit printsummary="true" haltonfailure="false">
+            <classpath>
+				<path refid="test-classpath"/>
+				<pathelement location="${build.classes.dir}"/>
+				<pathelement location="${test.classes.dir}"/>
+			</classpath>
+			<formatter type="brief" usefile="false"/>
+			<formatter type="xml"/>
+			<batchtest todir="${test.reports.dir}">
+				<fileset dir="${test.classes.dir}" includes="**/*Test.class"/>
+			</batchtest>
+        </junit>
+    </target>
+
+    <target name="test-report">
+        <junitreport todir="${test.reports.dir}">
+            <fileset dir="${test.reports.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${test.reports.dir}"/>
+        </junitreport>
+    </target>
+
+	<target name="help">
+		<echo>
+Usage:  ant target
+
+target is one of:
+	clean     - delete .class files from the build directory (${build.dir})
+	build     - compile java source code
+	buildall  - recompile everything (runs clean first)
+	dist      - create a distribution in directory ${dist.dir}
+	javadoc   - run Javadoc and put output in directory ${doc.dir}/api
+	wrapper   - create executable "wrapper" using JSmooth
+	test      - run unit tests
+
+File Locations
+Source dir:  ${src.dir}
+Build dir:   ${build.dir} and ${build.classes.dir}
+Test Source: ${test.dir}
+Test Report: ${test.reports.dir}
+Distribution: ${dist.dir}
+Documentation: ${doc.dir}
+
+		</echo>
+	</target>
+
+</project>
