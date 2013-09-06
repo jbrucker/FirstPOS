@@ -18,7 +18,7 @@
 	<!-- directory for main source code -->
 	<property name="src.dir" location="src"/>
 	<!-- directories for build output -->
-	<property name="build.dir" location="target"/>
+	<property name="build.dir" location="build"/>
 	<property name="build.classes.dir" location="${build.dir}/classes"/>
 	<!-- directory for the distribution products -->
 	<property name="dist.dir"  location="dist"/>
