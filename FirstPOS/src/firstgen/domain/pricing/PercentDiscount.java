@@ -1,7 +1,7 @@
 /**
  * 
  */
-package firstgen.service;
+package firstgen.domain.pricing;
 
 import firstgen.domain.Sale;
 
@@ -9,22 +9,17 @@ import firstgen.domain.Sale;
  * @author Supachart
  *
  */
-public class DiscountOverThreshlod implements SalePricing {
+public class PercentDiscount implements SalePricing {
 
-	double discount = 0.0;
-	double threshold = 0.0;
+	double percentage = 0.05;
 	/* (non-Javadoc)
 	 * @see firstgen.service.SalePricing#getTotal(firstgen.domain.Sale)
 	 */
 
 	public double getTotal(Sale sale) {
 		// TODO Auto-generated method stub
-		double pdt = sale.getSubtotal();
-		if(pdt<threshold)
-			return pdt;
-		else
-			return pdt - discount;
-		//return 0;
+		if(sale.equals(null)) return 0;
+		return percentage * sale.getSubtotal();
 	}
 
 }

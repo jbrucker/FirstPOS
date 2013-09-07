@@ -3,7 +3,8 @@ import java.util.*;
 
 import org.apache.log4j.Logger;
 
-import firstgen.service.SalePricing;
+import firstgen.domain.pricing.DefaultSalePricing;
+import firstgen.domain.pricing.SalePricing;
 import firstgen.service.TaxCalculator;
 
 /** A Sale object contains information about a sales transaction,
@@ -13,6 +14,9 @@ import firstgen.service.TaxCalculator;
  * @author James Brucker
  */
 public class Sale extends Observable implements Iterable<LineItem> {
+	private static final SalePricing DEFAULT_PRICING = new DefaultSalePricing();
+
+	private static final Logger logger = Logger.getLogger( Sale.class );
 	
 	private Calendar date; // date of the sale
 	private List<LineItem> items; // items in the sale
@@ -20,12 +24,10 @@ public class Sale extends Observable implements Iterable<LineItem> {
 	private TaxCalculator taxCalculator;
 	private SalePricing salePricing;
 	
-
-	private static Logger logger = Logger.getLogger( Sale.class );
-		
 	/** create a new sale with a given customer */
 	public Sale( Customer customer ) {
 		this.customer = customer;
+		salePricing =  DEFAULT_PRICING;
 		items = new ArrayList<LineItem>( );
 		date = Calendar.getInstance(); // maybe updated when the sale ends?
 	}
@@ -95,21 +97,23 @@ public class Sale extends Observable implements Iterable<LineItem> {
 			return false;
 		}
 		
-		boolean check = false;
+		// If this item is already in the sale then increase the quantity
+		// instead of adding a new item.
+		//TODO add code to check if existing item has a decorator attached,
+		// such as a bundle discount ("buy 2 get 1 free").
+		boolean newitem = true;
 		for( int k = items.size()-1; k >= 0; k--) {
 			LineItem sli = items.get(k);
 			if ( item.itemID.equals( sli.getItem().getItemID() ) )
 			{
 				sli.setQuantity( sli.getQuantity() + quantity );
-				check = true;
+				newitem = false;
 				break;
 			}
 		}
-		if(!check)
-		{
+		if (newitem) {
 			LineItem saleItem = new LineItem( item, quantity );
 			// this should always succeed (true)
-			//boolean result =
 			items.add( saleItem );
 		}
 		setChangedAndNotifyObservers();
@@ -158,7 +162,8 @@ public class Sale extends Observable implements Iterable<LineItem> {
  					 // these items from the sales basket.
 	}
 	
-	/** get the total value of the sale so far, without tax or discount.
+	/** 
+	 * Get the total value of the sale so far, without tax or discount.
 	 * @return gross sale total so far, without tax or discount.
 	 */
 	public double getSubtotal( ) {

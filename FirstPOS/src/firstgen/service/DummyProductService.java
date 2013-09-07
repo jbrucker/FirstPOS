@@ -28,7 +28,7 @@ public class DummyProductService implements ProductService {
 
 	public ProductDescription getProduct(String id) {
 		if ( productCatalog == null ) return null;
-		return productCatalog.getItem(id);
+		return productCatalog.getProduct(id);
 	}
 
 	public List<ProductDescription> findProduct(String match) {

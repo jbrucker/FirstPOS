@@ -46,7 +46,7 @@ public class ProductCatalog {
 	 *        If the item ID is not found in the Store's inventory,
 	 *        then a null value is returned.
 	 */
-	public ProductDescription getItem( String id ) {
+	public ProductDescription getProduct( String id ) {
 		logger.info("looking for item "+id);
 		ProductDescription item;
 		try {
@@ -69,7 +69,7 @@ public class ProductCatalog {
 	 * @param pd is the product description of the item
 	 * @return true if operation succeeds, false if this ID already in catalog
 	 */
-	protected boolean addItem(String id, ProductDescription pd ) {
+	protected boolean addProduct(String id, ProductDescription pd ) {
 		if ( products.containsKey(id) ) return false;
 		products.put(id, pd);
 		return true;

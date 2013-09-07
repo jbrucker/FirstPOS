@@ -34,7 +34,7 @@ public class Register implements POSInterface {
 		assert productCatalog != null : "ProductCatalog has not been set in Register";
 
 		if ( sale == null ) startSale();
-		ProductDescription pd = productCatalog.getItem( id );
+		ProductDescription pd = productCatalog.getProduct( id );
 		sale.addItem(pd, quantity);
 		return pd;
 	}

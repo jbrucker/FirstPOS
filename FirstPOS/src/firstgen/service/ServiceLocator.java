@@ -2,6 +2,7 @@ package firstgen.service;
 
 import org.apache.log4j.Logger;
 
+import firstgen.domain.pricing.SalePricing;
 import firstgen.util.Property;
 import firstgen.util.PropertyManager;
 

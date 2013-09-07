@@ -1,7 +1,7 @@
 /**
  * 
  */
-package firstgen.service;
+package firstgen.domain.pricing;
 
 import firstgen.domain.Sale;
 
