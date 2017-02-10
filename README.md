@@ -1,7 +1,7 @@
 FirstPOS
 ========
 
-A Point of Sale application in Java for Kasetsart University course in software spec &amp; design.
+A Point of Sale (POS) application with graphical interface, for performing sales in a store. Written for Kasetsart University course in software design.
 
 ### Guidelines for Team
 1. Know the repo layout so you commit files to the correct directories.
