@@ -4,11 +4,12 @@ FirstPOS
 A Point of Sale (POS) application with graphical interface, for performing sales in a store. Written for Kasetsart University course in software design.
 
 ### Guidelines for Team
+
 1. Know the repo layout so you commit files to the correct directories.
 2. Use your real name on commits.
 3. Use the Java coding and commenting convention as in OOP.
 4. Test your code locally before pushing any code to remote origin.
-5. 
+5. Check the remote repository before committing, to ensure your copy is up to date.
 
 
 ### Repository Layout
