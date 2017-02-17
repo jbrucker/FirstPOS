@@ -1,4 +1,4 @@
-FirstPOS
+FirstPOS - a really simple Point-of-Sale System
 ========
 by Jim Brucker
 
