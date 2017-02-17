@@ -1,4 +1,4 @@
-FirstPOS
+FirstPOS - a really simple Point-of-Sale System
 ========
 
 A Point of Sale (POS) application with graphical interface, for performing sales in a store. Written for Kasetsart University course in software design.
